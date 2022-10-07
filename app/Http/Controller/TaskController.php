@@ -71,14 +71,13 @@ class TaskController extends Controller {
 	// TODO: deleteTask()
 	public function deleteTask(Request $request)
 	{
-		$mongoTasks = new MongoModel('tasks');
 		$request->validate([
-			'task_id'=>'required'
+			'task_id'=>'required|string'
 		]);
 
 		$taskId = $request->task_id;
 
-		$existTask = $mongoTasks->find(['_id'=>$taskId]);
+		$existTask = $this->taskService->getById($taskId);
 
 		if(!$existTask)
 		{
@@ -87,7 +86,7 @@ class TaskController extends Controller {
 			], 401);
 		}
 
-		$mongoTasks->deleteQuery(['_id'=>$taskId]);
+		$this->taskService->deleteTask($taskId);
 
 		return response()->json([
 			'message'=> 'Success delete task '.$taskId

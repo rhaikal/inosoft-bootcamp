@@ -21,7 +21,7 @@ class TaskService {
 	}
 
 	/**
-	 * NOTE: menambahkan task
+	 * NOTE: untuk menambahkan task
 	 */
 	public function addTask(array $data)
 	{
@@ -30,7 +30,7 @@ class TaskService {
 	}
 
 	/**
-	 * NOTE: UNTUK mengambil data task
+	 * NOTE: untuk mengambil data task
 	 */
 	public function getById(string $taskId)
 	{
@@ -55,5 +55,13 @@ class TaskService {
 
 		$id = $this->taskRepository->save( $editTask);
 		return $id;
+	}
+
+	/**
+	 * NOTE: untuk menghapus task
+	 */
+	public function deleteTask(string $taskId)
+	{
+		$this->taskRepository->delete($taskId);
 	}
 }
