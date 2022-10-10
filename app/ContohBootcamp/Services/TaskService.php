@@ -78,4 +78,42 @@ class TaskService {
 
 		$this->taskRepository->save($task);
 	}
+
+	public function createSubTask(array $task, array $data)
+	{
+		if (isset($task['subtasks'])) {
+			$subtasks = $task['subtasks'];
+		} else {
+			$subtasks = [];
+		}
+
+		$id = $this->taskRepository->createSubTask($task, $subtasks, $data);
+		
+		return $id; 
+	}
+
+	public function deleteSubTask(array $task, string $subtaskId)
+	{
+		if (isset($task['subtasks'])) {
+			$subtasks = $task['subtasks'];
+		} else {
+			$subtasks = [];
+		}
+
+		// Pencarian dan penghapusan subtask
+		$subtasks = array_filter($subtasks, function($subtask) use($subtaskId) {
+			if($subtask['_id'] == $subtaskId)
+			{
+				return false;
+			} else {
+				return true;
+			}
+		});
+		$subtasks = array_values($subtasks);
+		$task['subtasks'] = $subtasks;
+
+		$id = $this->taskRepository->save($task);
+		
+		return $id;
+	}
 }
