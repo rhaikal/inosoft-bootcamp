@@ -96,15 +96,14 @@ class TaskController extends Controller {
 	// TODO: assignTask()
 	public function assignTask(Request $request)
 	{
-		$mongoTasks = new MongoModel('tasks');
 		$request->validate([
-			'task_id'=>'required',
-			'assigned'=>'required'
+			'task_id'=>'required|string',
+			'assigned'=>'required|string'
 		]);
 
 		$taskId = $request->get('task_id');
 		$assigned = $request->post('assigned');
-		$existTask = $mongoTasks->find(['_id'=>$taskId]);
+		$existTask = $this->taskService->getById($taskId);
 
 		if(!$existTask)
 		{
@@ -113,11 +112,9 @@ class TaskController extends Controller {
 			], 401);
 		}
 
-		$existTask['assigned'] = $assigned;
+		$this->taskService->assignTask($existTask, $assigned);
 
-		$mongoTasks->save($existTask);
-
-		$task = $mongoTasks->find(['_id'=>$taskId]);
+		$task = $this->taskService->getById($taskId);
 
 		return response()->json($task);
 	}
@@ -125,13 +122,12 @@ class TaskController extends Controller {
 	// TODO: unassignTask()
 	public function unassignTask(Request $request)
 	{
-		$mongoTasks = new MongoModel('tasks');
 		$request->validate([
 			'task_id'=>'required'
 		]);
 
 		$taskId = $request->post('task_id');
-		$existTask = $mongoTasks->find(['_id'=>$taskId]);
+		$existTask = $this->taskService->getById($taskId);
 
 		if(!$existTask)
 		{
@@ -140,11 +136,9 @@ class TaskController extends Controller {
 			], 401);
 		}
 
-		$existTask['assigned'] = null;
+		$this->taskService->unassignTask($existTask);
 
-		$mongoTasks->save($existTask);
-
-		$task = $mongoTasks->find(['_id'=>$taskId]);
+		$task = $this->taskService->getById($taskId);
 
 		return response()->json($task);
 	}

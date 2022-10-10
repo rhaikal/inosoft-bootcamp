@@ -53,7 +53,7 @@ class TaskService {
 			$editTask['description'] = $formData['description'];
 		}
 
-		$id = $this->taskRepository->save( $editTask);
+		$id = $this->taskRepository->save($editTask);
 		return $id;
 	}
 
@@ -63,5 +63,19 @@ class TaskService {
 	public function deleteTask(string $taskId)
 	{
 		$this->taskRepository->delete($taskId);
+	}
+
+	public function assignTask(array $task, string $assigned)
+	{
+		$task['assigned'] = $assigned;
+
+		$this->taskRepository->save($task);
+	}
+	
+	public function unassignTask(array $task)
+	{
+		$task['assigned'] = null;
+
+		$this->taskRepository->save($task);
 	}
 }
