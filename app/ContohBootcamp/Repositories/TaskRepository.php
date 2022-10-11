@@ -66,17 +66,26 @@ class TaskRepository
 	/**
 	 * Untuk membuat subtask
 	 */
-	public function createSubTask(array $task, array $subtasks, array $data)
+	public function createSubTask(array $task, array $data)
 	{
-		$subtasks[] = [
+		$subtask = [
 			'_id'=> (string) new \MongoDB\BSON\ObjectId(),
 			'title'=> $data['title'],
 			'description'=> $data['description']
 		];
 
-		$task['subtasks'] = $subtasks;
+		$this->tasks->collection->updateOne(['_id' => $task['_id']], ['$push' => ['subtasks' => $subtask]]);
 
-		$id = $this->tasks->save($task);
-		return $id;
+		return $task['_id'];
+	}
+
+	/**
+	 * Untuk menghapus subtask
+	 */
+	public function deleteSubTask(array $task, string $subtaskId)
+	{
+		$this->tasks->collection->updateOne(['_id' => $task['_id']], ['$pull' => ['subtasks' => ['_id' => $subtaskId]]]);
+
+		return $task['_id'];
 	}
 }
