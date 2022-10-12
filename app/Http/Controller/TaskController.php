@@ -50,11 +50,13 @@ class TaskController extends Controller {
 		$request->validate([
 			'title'=>'string',
 			'description'=>'string',
-			'assigned'=>'string',
-			'subtasks'=>'array',
 		]);
 
-		$formData = $request->only('title', 'description', 'assigned', 'subtasks');
+		$formData = [
+			'title' => $request->post('title'),
+			'description' => $request->post('description'),
+		];
+		
 		$existTask = $this->taskService->getById($id);
 
 		if(!$existTask)
