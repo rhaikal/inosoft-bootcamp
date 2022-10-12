@@ -30,15 +30,7 @@ class TaskController extends Controller {
 			'description'=>$request->post('description')
 		];
 
-		$dataSaved = [
-			'title'=>$data['title'],
-			'description'=>$data['description'],
-			'assigned'=>null,
-			'subtasks'=> [],
-			'created_at'=>time()
-		];
-
-		$id = $this->taskService->addTask($dataSaved);
+		$id = $this->taskService->addTask($data);
 		$task = $this->taskService->getById($id);
 
 		return response()->json($task);
@@ -56,7 +48,7 @@ class TaskController extends Controller {
 			'title' => $request->post('title'),
 			'description' => $request->post('description'),
 		];
-		
+
 		$existTask = $this->taskService->getById($id);
 
 		if(!$existTask)
