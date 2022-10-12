@@ -88,4 +88,12 @@ class TaskRepository
 
 		return $task['_id'];
 	}
+
+	/**
+	 * Untuk mengubah subtask
+	 */
+	public function updateSubtask(string $subtaskId, array $formData)
+	{
+		$this->tasks->collection->updateOne(['subtasks._id' => $subtaskId], ['$set' => $formData]);
+	}
 }

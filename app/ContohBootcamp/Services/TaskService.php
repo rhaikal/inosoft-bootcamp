@@ -92,4 +92,21 @@ class TaskService {
 		
 		return $id;
 	}
+
+	public function updateSubtask(string $subtaskId, array $formData)
+	{
+		if(isset($formData['title']))
+		{
+			$editSubtask['subtasks.$.title'] = $formData['title'];
+		}
+
+		if(isset($formData['description']))
+		{
+			$editSubtask['subtasks.$.description'] = $formData['description'];
+		}
+
+		$id = $this->taskRepository->updateSubtask($subtaskId, $editSubtask);
+
+		return $id;
+	}
 }

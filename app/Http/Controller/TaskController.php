@@ -3,10 +3,8 @@
 namespace App\Http\Controller;
 
 use App\ContohBootcamp\Services\TaskService;
-use App\Helpers\MongoModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use MongoDB\BSON\ObjectId;
 
 class TaskController extends Controller {
 	private TaskService $taskService;
@@ -184,4 +182,37 @@ class TaskController extends Controller {
 		return response()->json($task);
 	}
 
+	public function updateSubtask(Request $request ,string $id, string $subtaskId)
+	{
+		$request->validate([
+			'title' => 'string',
+			'description' => 'string' 
+		]);
+
+		$data = [
+			'title' => $request->post('title'),
+			'description' => $request->post('description'),
+		];
+
+		$existTask = $this->taskService->getById($id);
+
+		if(!$existTask)
+		{
+			return response()->json([
+				"message"=> "Task ".$id." tidak ada"
+			], 401);
+		}
+
+		if(!in_array($subtaskId, array_column($existTask['subtasks'], '_id'))){
+			return response()->json([
+				"message"=> "Subtask ".$subtaskId." tidak ada"
+			], 401);
+		}
+
+		$this->taskService->updateSubtask($subtaskId, $data);
+
+		$task = $this->taskService->getById($id);
+
+		return response()->json($task);
+	}
 }

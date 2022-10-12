@@ -29,5 +29,6 @@ Route::prefix('task')->group(function() {
     Route::patch('/{id}/assign', [TaskController::class, 'assignTask']);
     Route::patch('/{id}/unassign', [TaskController::class, 'unassignTask']);
     Route::post('/{id}/subtask', [TaskController::class, 'createSubtask']);
+    Route::patch('/{id}/subtask/{subtaskId}', [TaskController::class, 'updateSubtask']);
     Route::delete('/{id}/subtask/{subtaskId}', [TaskController::class, 'deleteSubtask']);
 });
