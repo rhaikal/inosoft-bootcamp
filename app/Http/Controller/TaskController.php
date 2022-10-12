@@ -169,6 +169,12 @@ class TaskController extends Controller {
 			], 401);
 		}
 
+		if(!in_array($subtaskId, array_column($existTask['subtasks'], '_id'))){
+			return response()->json([
+				"message"=> "Subtask ".$subtaskId." tidak ada"
+			], 401);
+		}
+		
 		$this->taskService->deleteSubtask($existTask, $subtaskId);
 
 		$task = $this->taskService->getById($id);
