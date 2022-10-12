@@ -6,6 +6,7 @@ use App\ContohBootcamp\Services\TaskService;
 use App\Helpers\MongoModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use MongoDB\BSON\ObjectId;
 
 class TaskController extends Controller {
 	private TaskService $taskService;
@@ -46,158 +47,139 @@ class TaskController extends Controller {
 	}
 
 
-	public function updateTask(Request $request)
+	public function updateTask(Request $request, string $id)
 	{
 		$request->validate([
-			'task_id'=>'required|string',
 			'title'=>'string',
 			'description'=>'string',
 			'assigned'=>'string',
 			'subtasks'=>'array',
 		]);
 
-		$taskId = $request->post('task_id');
 		$formData = $request->only('title', 'description', 'assigned', 'subtasks');
-		$task = $this->taskService->getById($taskId);
+		$existTask = $this->taskService->getById($id);
 
-		$this->taskService->updateTask($task, $formData);
+		if(!$existTask)
+		{
+			return response()->json([
+				"message"=> "Task ".$id." tidak ada"
+			], 401);
+		}
 
-		$task = $this->taskService->getById($taskId);
+		$this->taskService->updateTask($existTask, $formData);
+
+		$task = $this->taskService->getById($id);
 
 		return response()->json($task);
 	}
 
 
 	// TODO: deleteTask()
-	public function deleteTask(Request $request)
+	public function deleteTask(string $id)
 	{
-		$request->validate([
-			'task_id'=>'required|string'
-		]);
-
-		$taskId = $request->task_id;
-
-		$existTask = $this->taskService->getById($taskId);
+		$existTask = $this->taskService->getById($id);
 
 		if(!$existTask)
 		{
 			return response()->json([
-				"message"=> "Task ".$taskId." tidak ada"
+				"message"=> "Task ".$id." tidak ada"
 			], 401);
 		}
 
-		$this->taskService->deleteTask($taskId);
+		$this->taskService->deleteTask($id);
 
 		return response()->json([
-			'message'=> 'Success delete task '.$taskId
+			'message'=> 'Success delete task '.$id
 		]);
 	}
 
 	// TODO: assignTask()
-	public function assignTask(Request $request)
+	public function assignTask(Request $request, string $id)
 	{
 		$request->validate([
-			'task_id'=>'required|string',
 			'assigned'=>'required|string'
 		]);
 
-		$taskId = $request->get('task_id');
 		$assigned = $request->post('assigned');
-		$existTask = $this->taskService->getById($taskId);
+		$existTask = $this->taskService->getById($id);
 
 		if(!$existTask)
 		{
 			return response()->json([
-				"message"=> "Task ".$taskId." tidak ada"
+				"message"=> "Task ".$id." tidak ada"
 			], 401);
 		}
 
 		$this->taskService->assignTask($existTask, $assigned);
 
-		$task = $this->taskService->getById($taskId);
+		$task = $this->taskService->getById($id);
 
 		return response()->json($task);
 	}
 
 	// TODO: unassignTask()
-	public function unassignTask(Request $request)
+	public function unassignTask(string $id)
 	{
-		$request->validate([
-			'task_id'=>'required'
-		]);
-
-		$taskId = $request->post('task_id');
-		$existTask = $this->taskService->getById($taskId);
+		$existTask = $this->taskService->getById($id);
 
 		if(!$existTask)
 		{
 			return response()->json([
-				"message"=> "Task ".$taskId." tidak ada"
+				"message"=> "Task ".$id." tidak ada"
 			], 401);
 		}
 
 		$this->taskService->unassignTask($existTask);
 
-		$task = $this->taskService->getById($taskId);
+		$task = $this->taskService->getById($id);
 
 		return response()->json($task);
 	}
 
 	// TODO: createSubtask()
-	public function createSubtask(Request $request)
+	public function createSubtask(Request $request, string $id)
 	{
 		$request->validate([
-			'task_id'=>'required|string',
 			'title'=>'required|string',
 			'description'=>'required|string'
 		]);
-
-		$taskId = $request->post('task_id');
 
 		$data = [
 			'title' => $request->post('title'),
 			'description' => $request->post('description'),
 		];
 		
-		$existTask = $this->taskService->getById($taskId);
+		$existTask = $this->taskService->getById($id);
 
 		if(!$existTask)
 		{
 			return response()->json([
-				"message"=> "Task ".$taskId." tidak ada"
+				"message"=> "Task ".$id." tidak ada"
 			], 401);
 		}
 
 		$this->taskService->createSubTask($existTask, $data);
 
-		$task = $this->taskService->getById($taskId);
+		$task = $this->taskService->getById($id);
 
 		return response()->json($task);
 	}
 
 	// TODO deleteSubTask()
-	public function deleteSubtask(Request $request)
+	public function deleteSubtask(string $id, string $subtaskId)
 	{
-		$request->validate([
-			'task_id'=>'required',
-			'subtask_id'=>'required'
-		]);
-
-		$taskId = $request->post('task_id');
-		$subtaskId = $request->post('subtask_id');
-
-		$existTask = $this->taskService->getById($taskId);
+		$existTask = $this->taskService->getById($id);
 
 		if(!$existTask)
 		{
 			return response()->json([
-				"message"=> "Task ".$taskId." tidak ada"
+				"message"=> "Task ".$id." tidak ada"
 			], 401);
 		}
 
 		$this->taskService->deleteSubTask($existTask, $subtaskId);
 
-		$task = $this->taskService->getById($taskId);
+		$task = $this->taskService->getById($id);
 
 		return response()->json($task);
 	}
