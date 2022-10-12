@@ -66,7 +66,7 @@ class TaskRepository
 	/**
 	 * Untuk membuat subtask
 	 */
-	public function createSubTask(array $task, array $data)
+	public function createSubtask(array $task, array $data)
 	{
 		$subtask = [
 			'_id'=> (string) new \MongoDB\BSON\ObjectId(),
@@ -82,7 +82,7 @@ class TaskRepository
 	/**
 	 * Untuk menghapus subtask
 	 */
-	public function deleteSubTask(array $task, string $subtaskId)
+	public function deleteSubtask(array $task, string $subtaskId)
 	{
 		$this->tasks->collection->updateOne(['_id' => $task['_id']], ['$pull' => ['subtasks' => ['_id' => $subtaskId]]]);
 

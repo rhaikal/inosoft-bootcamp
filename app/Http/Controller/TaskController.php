@@ -156,7 +156,7 @@ class TaskController extends Controller {
 			], 401);
 		}
 
-		$this->taskService->createSubTask($existTask, $data);
+		$this->taskService->createSubtask($existTask, $data);
 
 		$task = $this->taskService->getById($id);
 
@@ -175,7 +175,7 @@ class TaskController extends Controller {
 			], 401);
 		}
 
-		$this->taskService->deleteSubTask($existTask, $subtaskId);
+		$this->taskService->deleteSubtask($existTask, $subtaskId);
 
 		$task = $this->taskService->getById($id);
 

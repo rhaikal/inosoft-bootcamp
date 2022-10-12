@@ -79,14 +79,14 @@ class TaskService {
 		$this->taskRepository->save($task);
 	}
 
-	public function createSubTask(array $task, array $data)
+	public function createSubtask(array $task, array $data)
 	{
 		$id = $this->taskRepository->createSubTask($task, $data);
 		
 		return $id; 
 	}
 
-	public function deleteSubTask(array $task, string $subtaskId)
+	public function deleteSubtask(array $task, string $subtaskId)
 	{
 		$id = $this->taskRepository->deleteSubTask($task, $subtaskId);
 		
